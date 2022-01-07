@@ -1,7 +1,15 @@
 MLO_project
 ==============================
 
-A short description of the project.
+Pytorch ecosystem: Transforms.
+Dataset: https://www.kaggle.com/datatattle/covid-19-nlp-text-classification
+
+As of now the group will be focusing on a sentiment-tweet-analysis data set from Kaggle. The data set consist of around 40k training points and 4k test points, distributed over 6 columns; name, Username Tweeted from, Tweeted at, Twitter text and sentiment which is itself spread out over 5 categories. 
+
+The goal of the project (based on the current dataset) is to predict the sentiment of a tweet, this will give us a rough idea of what the tweet is about in buzzwords.
+Before training it is already obvious that some data cleaning will be needed as the raw data is unfiltered tweets, some containing "#", article links, "@" to other accounts etc. 
+
+The training will be run in docker containers, and the output will be displayed on wandb (Link will follow later). 
 
 Project Organization
 ------------
