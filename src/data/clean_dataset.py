@@ -54,7 +54,13 @@ raw_data['input'] = raw_data['input'].str.replace(special_chars, '')
 forward_slash = r"/"
 raw_data['input'] = raw_data['input'].str.replace(forward_slash, ' ')
 
+raw_data['label'] = raw_data['label'].replace(["Extremely Negative", "Negative", "Neutral", "Positive", "Extremely Positive"], [1, 2, 3, 4, 5])
 
+# for index, value in enumerate(raw_data['label']):
+#     if value == "Extremely Negative":
+#         raw_data[index]['label'].replace()
+print(raw_data)
+##raw_data.to_csv(f'{Path(os.getcwd()).parents[1]}//data//processed//cleaned_tr_.csv') 
 
 
 ## testing everything is as it should be
