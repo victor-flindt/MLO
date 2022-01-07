@@ -29,6 +29,14 @@ requirements: test_environment
 data: requirements
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
 
+## Update remote data using dvc
+update-data: 
+	dvc add data/
+	git add data.dvc
+	git commit -m "update dvc"
+	git tag -a $(shell git rev-parse @) -m "update dvc"
+	dvc push
+	
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
