@@ -36,7 +36,8 @@ update-data:
 	git commit -m "update dvc"
 	git tag -a $(shell git rev-parse @) -m "update dvc"
 	dvc push
-	
+	git push
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
