@@ -34,7 +34,7 @@ update-data:
 	dvc add data/
 	git add data.dvc
 	git commit -m "update dvc"
-	git tag -a $(shell git rev-parse @) -m "update dvc"
+	git tag -a $(shell date | tr -d "[:space:]" | sed 's/://g') -m "update dvc"
 	dvc push
 	git push
 
