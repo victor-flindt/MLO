@@ -29,6 +29,27 @@ requirements: test_environment
 data: requirements
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
 
+## Train model
+train: 
+	$(PYTHON_INTERPRETER) src/models/train_model.py data/processed models
+
+## Predict
+predict:
+	$(PYTHON_INTERPRETER) src/models/predict_model.py models/model.pth
+
+## Docker
+build.runtime:
+	docker build -f runtime.Dockerfile -t predict-runtime .
+
+run: build.runtime
+	docker run --rm -it --init \
+	--gpus=all \
+	--name predict predict-runtime models
+
+## Interactive
+interactive: build.runtime
+	docker run --rm -it --entrypoint bash --name predict predict-runtime
+
 ## Update remote data using dvc
 update-data: 
 	dvc add data/
