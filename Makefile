@@ -29,14 +29,36 @@ requirements: test_environment
 data: requirements
 	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
 
+## Train model
+train: 
+	$(PYTHON_INTERPRETER) src/models/train_model.py data/processed models
+
+## Predict
+predict:
+	$(PYTHON_INTERPRETER) src/models/predict_model.py models/model.pth
+
+## Docker
+build.runtime:
+	docker build -f runtime.Dockerfile -t predict-runtime .
+
+run: build.runtime
+	docker run --rm -it --init \
+	--gpus=all \
+	--name predict predict-runtime models
+
+## Interactive
+interactive: build.runtime
+	docker run --rm -it --entrypoint bash --name predict predict-runtime
+
 ## Update remote data using dvc
 update-data: 
 	dvc add data/
 	git add data.dvc
 	git commit -m "update dvc"
-	git tag -a $(shell git rev-parse @) -m "update dvc"
+	git tag -a $(shell date | tr -d "[:space:]" | sed 's/://g') -m "update dvc"
 	dvc push
-	
+	git push
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
