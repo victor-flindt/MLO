@@ -78,4 +78,23 @@ def dataset():
     train_data_loader = create_data_loader(df_train, tokenizer, MAX_LEN, BATCH_SIZE)
     test_data_loader = create_data_loader(df_test, tokenizer, MAX_LEN, BATCH_SIZE)
 
+    # data = next(iter(train_data_loader))
+    # print(data.keys())
+    # print(data['input_ids'].shape)
+    # print(data['attention_mask'].shape)
+    # print(data['targets'].shape)
+
+    # print(data['input_ids'][1])
+    # print(data['review_text'][1])
+    # print(data['targets'][1])
+
+    # for batch_idx,(afaf,inputs,afaf,labels) in enumerate(next(iter(train_data_loader))):
+    #     if batch_idx >= 5:
+    #         break
+    #     else:
+    #         print(inputs)
+
     return train_data_loader, test_data_loader
+
+# if __name__ == "__main__":
+#   dataset()
