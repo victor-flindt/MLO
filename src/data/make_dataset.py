@@ -5,7 +5,9 @@ from src.data.clean_dataset import clean_data
 from torch.utils.data import TensorDataset, random_split
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-def create_loaders():
+from src.data import _SRC_PATH
+
+def create_loaders(loader_batch_size, train_size_percentage, sentence_max_length):
     
     data=clean_data()
     sentences = data.input.values
@@ -13,6 +15,7 @@ def create_loaders():
     # Load the BERT tokenizer.
     print('Loading BERT tokenizer...')
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+    print('BERT tokenizer loaded!')
 
     max_len = 0
 
