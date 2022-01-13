@@ -3,7 +3,7 @@ from transformers import AdamW, BertConfig, BertForSequenceClassification
 from transformers import get_linear_schedule_with_warmup
 import numpy as np
 import random
-from src.data.test_loader import create_loaders
+from src.data.make_dataset import create_loaders
 
 import numpy as np
 import datetime
