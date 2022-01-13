@@ -3,7 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 import numpy as np
-from clean_dataset import clean_data
+from src.data.clean_dataset import clean_data
 from transformers import BertTokenizer
 RANDOM_SEED = 42
 np.random.seed(RANDOM_SEED)
@@ -68,7 +68,7 @@ def create_data_loader(df, tokenizer, max_len, batch_size):
 
 def dataset():
     BATCH_SIZE = 16
-    PRE_TRAINED_MODEL_NAME = 'bert-base-cased'
+    PRE_TRAINED_MODEL_NAME = 'bert-base-uncased'
     tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
 
     df_train,df_test=make_dataset()

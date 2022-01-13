@@ -10,7 +10,7 @@ from transformers.tokenization_utils import Trie
 # The file make_datasetpy will handle the actual dataloader.
 def clean_data():
 
-    raw_data = pd.read_csv(f'{Path(os.getcwd()).parents[1]}\\data\\raw\\Corona_NLP_train.csv', encoding='latin-1')
+    raw_data = pd.read_csv(f'{Path(os.getcwd())}/data/raw/Corona_NLP_train.csv', encoding='latin-1')
 
     # list of columns which should be removed
     waste_col = ['UserName', 'ScreenName', 'Location', 'TweetAt']
@@ -49,7 +49,7 @@ def clean_data():
     forward_slash = r"/"
     raw_data['input'] = raw_data['input'].str.replace(forward_slash, ' ',regex=True)
 
-    raw_data['label'] = raw_data['label'].replace(["Extremely Negative", "Negative", "Neutral", "Positive", "Extremely Positive"], [1, 2, 3, 4, 5])
+    raw_data['label'] = raw_data['label'].replace(["Extremely Negative", "Negative", "Neutral", "Positive", "Extremely Positive"], [0,1,2,3,4])
 
     # for saving the data to a csv for further processing.
     # raw_data.to_csv(f'{Path(os.getcwd()).parents[1]}//data//processed//cleaned_tr.csv')
