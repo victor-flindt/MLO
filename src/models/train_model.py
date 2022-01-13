@@ -3,6 +3,7 @@ import hydra
 import numpy as np
 import time
 import random
+import wandb
 
 from transformers import AdamW, BertConfig, BertForSequenceClassification
 from transformers import get_linear_schedule_with_warmup
@@ -11,6 +12,8 @@ from src.data.make_dataset import create_loaders
 from src.utils import format_time
 
 from src.models import _SRC_PATH
+
+wandb.init()
 
 @hydra.main(config_path=_SRC_PATH, config_name="config.yaml")
 def main(cfg):
@@ -91,6 +94,8 @@ def main(cfg):
                 # Calculate elapsed time in minutes.
                 elapsed = format_time(time.time() - t0)
                 
+                wandb.log({"elapsed_time": elapsed})
+                
                 # Report progress.
                 print('  Batch {:>5,}  of  {:>5,}.    Elapsed: {:}.'.format(step, len(train_dataloader), elapsed))
 
@@ -108,6 +113,8 @@ def main(cfg):
 
             loss = result.loss
             logits = result.logits
+
+            wandb.log({"loss": loss})
 
             total_train_loss += loss.item()
 
