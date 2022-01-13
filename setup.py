@@ -6,5 +6,5 @@ setup(
     version='0.1.0',
     description='A short description of the project.',
     author='Your name (or your organization/company/team)',
-    license='',
+    license='', 
 )

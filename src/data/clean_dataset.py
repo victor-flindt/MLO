@@ -14,7 +14,7 @@ def clean_data():
 
     raw_data = pd.read_csv(_RAW_DATA_PATH, encoding='latin-1')
 
-    # list of columns which should be removed
+    # list of columns which should be rem oved
     waste_col = ['UserName', 'ScreenName', 'Location', 'TweetAt']
     # removing columns
     raw_data = raw_data.drop(waste_col, axis=1)
