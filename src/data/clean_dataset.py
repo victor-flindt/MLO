@@ -55,5 +55,3 @@ def clean_data():
     # raw_data.to_csv(f'{Path(os.getcwd()).parents[1]}//data//processed//cleaned_tr.csv')
     
     return raw_data
-
-clean_data()
