@@ -10,9 +10,9 @@ from transformers.tokenization_utils import Trie
 # The file make_datasetpy will handle the actual dataloader.
 def clean_data():
 
-    raw_data = pd.read_csv(f'{Path(os.getcwd())}/data/raw/Corona_NLP_train.csv', encoding='latin-1')
+    raw_data = pd.read_csv(f'{Path(os.getcwd())}\\data\\raw\\Corona_NLP_train.csv', encoding='latin-1')
 
-    # list of columns which should be removed
+    # list of columns which should be rem oved
     waste_col = ['UserName', 'ScreenName', 'Location', 'TweetAt']
     # removing columns
     raw_data = raw_data.drop(waste_col, axis=1)
