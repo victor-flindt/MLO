@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mlo-dtu",
+  "private_key_id": "69d315341227229640c22471c2466fa7a40db6cd",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDCGsuwncNUxvqV\naRuxSLrj3PRom92eZv1u+pYDf2Hf20ifbE2dEyjA2NrQ1QLmmNvRY2aQBhwRWzcT\nSQpToXNnKr6/XdAfS1wToCpdI4xBs5OlA+fPB2gwtvAwpOFLXKuIPHp+xSJ/zG/7\nHze9CNtVNsQzDwWI4DThtsodbwsxrcJvlzX83D7nNWLTCbvJYrpq0wVghLwdGxGK\nXLgzF+fv1QUZJ24kyFa0D3sZBc8A8zOKSAtAglStTcm8r0JEYFzrFPcPx7/jyNKo\nOpDoRfschEbf2JnFpgUTCO/pLCWF9BlpUK8o5ws/1Yz0UpHgfririjhNF/SHYo1w\n0bt2Gzt7AgMBAAECggEAFvJbVtjVE7umOhg/7thzR6bXugTbJp50TYoQRqo+JDG5\n8dGNkgkxeILqc2ULP77zFbDo72ku05pzS14He4A1sreUme5O7AmDrB+eLSlGVn9n\n7/UjPWVZxZCK7/qTVnkbyjJOz5fMjqEuMoOBRQwRVI9HPeYDuH0Q+LIcThh85qAN\ntIZvr1yYDkQ6Nqb3I5zmsj8Uyltjp7qvfUwYpDh7XAHRMsiX5agvAVJ/xxpjvct6\nXxXi4W8Ee2SoHM2QWZqA4LW9zuCbvJ5FFN9DkX6qo7UFdpF3sVBrL7+SUADR3RFL\ntlHSsOy8oSBHnjjeRSzqWQ5rLGU2J5Sz2/4Xq9DguQKBgQDjjILIM5BFJ2gvFTNo\nLFd0pRuL6YGlqTBWlnS20r9yKW53xCTVBQXSCxq+yhtTfSCSEE8LpnzYMHJhqA3o\nYHUodIyhI7zqlHMkJk6nJRyqm/86wuhNkL2Rx6p66Jf3ssva7gQ0JHP/J4UJgAAz\nIcdY+tcufOufC7YspkWCA/UyPwKBgQDaX8mU0NqunajcoqBlyiJhgDmrqd580Eqq\npwqw0esl9kA6MzcAq4lmPpOTwbAilMyZv3wk4nyB0OPLKLKVRctsqSegQfAz9RL9\nii6C/K4bTYCzv+1ZKpsuX7V8+r99oB+usdVwrChSDMOFFDJpvE8hX6HtB07SpI/y\nftENKU4vxQKBgQCr615oOiUXSoW5hPAZFd9hntkoJV0xt5lw4i3+b037x/fRfx1A\n4JGcN42Wdoac1p4EHVRLfhc3E6tnwxv25OG/lgcmPCUgqtYvis3EFRMKh+AXGml/\nKQtBGDTitdcTa0AAAfKlHqGRNt+Z5N7BwxSlUqe/VNyEhsm2BE3hxHG96wKBgE0k\nD0KpsMaEXTVroXuztwd4U2cHv9eZgPbdwVILJaUoYzHsC58J+aSLsHg+sKjWpZwe\nX41sEI2PLBkFTGic2iqNarka8e54wXedC6cr+ZkdfLyCrSaVfXIZTzRSI7kOCoMc\nwQhnWGr7pUnqg5CEe/OPI9Vmgnq4tTz1fYXHtJ39AoGAHB8SeAT3GIB7wRIbsyGf\nnyDJ3PLw8GCzKmfg0r9r4+Xac+C2ig7UTe3pEYB/FMkz7LOVJmR7DEMnyJj8oByL\n4tqO4dUqV6k4BESTrhB8LYJZBOwJ/Agp9jdU1kuvL6Zif3zKJIXJpTk8Gj5n/oCF\nOEmr449IvoxLxHjdp3zNVJw=\n-----END PRIVATE KEY-----\n",
+  "client_email": "docker-for-mlo@mlo-dtu.iam.gserviceaccount.com",
+  "client_id": "105859604862827283195",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/docker-for-mlo%40mlo-dtu.iam.gserviceaccount.com"
+}

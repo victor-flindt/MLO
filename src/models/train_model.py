@@ -12,8 +12,8 @@ import time
 
 from transformers.utils.dummy_pt_objects import CONVBERT_PRETRAINED_MODEL_ARCHIVE_LIST
 
-import wandb
-wandb.init()
+# import wandb
+# wandb.init()
 
 seed_val = 42
 
@@ -127,8 +127,8 @@ for epoch_i in range(0, epochs):
         accuracy = flat_accuracy(logits, label_ids)
         total_accuracy += accuracy
 
-        wandb.log({"loss": loss})
-        wandb.log({"accuracy": accuracy})
+        # wandb.log({"loss": loss})
+        # wandb.log({"accuracy": accuracy})
         
         total_train_loss += loss.item()
 
