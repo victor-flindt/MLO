@@ -99,7 +99,6 @@ for epoch_i in range(0, epochs):
 
     # For each batch of training data...
     for step, batch in enumerate(train_dataloader):
-
         # Progress update every 40 batches.
         if step % 40 == 0 and not step == 0:
             # Calculate elapsed time in minutes.
