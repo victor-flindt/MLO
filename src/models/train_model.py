@@ -1,3 +1,4 @@
+from logging import log
 import torch
 from transformers import AdamW, BertConfig, BertForSequenceClassification
 from transformers import get_linear_schedule_with_warmup
@@ -8,6 +9,8 @@ from src.data.make_dataset import create_loaders
 import numpy as np
 import datetime
 import time
+
+from transformers.utils.dummy_pt_objects import CONVBERT_PRETRAINED_MODEL_ARCHIVE_LIST
 
 import wandb
 wandb.init()
@@ -78,6 +81,7 @@ training_stats = []
 
 # Measure the total training time for the whole run.
 total_t0 = time.time()
+total_accuracy = 0
 
 # For each epoch...
 for epoch_i in range(0, epochs):
@@ -91,8 +95,7 @@ for epoch_i in range(0, epochs):
     total_train_loss = 0
 
     model.train()
-    n_correct = 0
-    n_wrong = 0
+    
 
     # For each batch of training data...
     for step, batch in enumerate(train_dataloader):
@@ -119,30 +122,14 @@ for epoch_i in range(0, epochs):
         loss = result.loss
         logits = result.logits
 
-        pred_class = torch.argmax(logits)
-        print("  target: " + str(b_labels.item()), end="")
-        print("  predicted: " + str(pred_class.item()), end="")
-        if b_labels.item() == pred_class.item():
-            n_correct += 1; print(" | correct")
-        else:
-            n_wrong += 1; print(" | wrong")
+        logits = logits.detach().cpu().numpy()
+        label_ids = b_labels.to('cpu').numpy()
 
-        if b_labels.item() != pred_class.item():
-            print("Test review as token IDs: ")
-        torch.set_printoptions(threshold=100, edgeitems=3)
-        print(b_input_ids)
-        print("Review source: ")
-        # words = toker.decode(b_input_ids[0])  # giant string
-        # print_list(words.split(' '), 3, 3)
-
-        print("==========================================")
-
-        acc = (n_correct * 1.0) / (n_correct + n_wrong)
-        print("\nCorrect: %4d " % n_correct)
-        print("Wrong:   %4d " % n_wrong)
+        accuracy = flat_accuracy(logits, label_ids)
+        total_accuracy += accuracy
 
         wandb.log({"loss": loss})
-        wandb.log({"accuracy": acc})
+        wandb.log({"accuracy": accuracy})
         
         total_train_loss += loss.item()
 
