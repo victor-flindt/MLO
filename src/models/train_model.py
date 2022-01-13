@@ -91,6 +91,8 @@ for epoch_i in range(0, epochs):
     total_train_loss = 0
 
     model.train()
+    n_correct = 0
+    n_wrong = 0
 
     # For each batch of training data...
     for step, batch in enumerate(train_dataloader):
@@ -99,7 +101,6 @@ for epoch_i in range(0, epochs):
         if step % 40 == 0 and not step == 0:
             # Calculate elapsed time in minutes.
             elapsed = format_time(time.time() - t0)
-            wandb.log({"elapsed_time": elapsed})
             # Report progress.
             print('  Batch {:>5,}  of  {:>5,}.    Elapsed: {:}.'.format(step, len(train_dataloader), elapsed))
 
@@ -118,7 +119,30 @@ for epoch_i in range(0, epochs):
         loss = result.loss
         logits = result.logits
 
+        pred_class = torch.argmax(logits)
+        print("  target: " + str(b_labels.item()), end="")
+        print("  predicted: " + str(pred_class.item()), end="")
+        if b_labels.item() == pred_class.item():
+            n_correct += 1; print(" | correct")
+        else:
+            n_wrong += 1; print(" | wrong")
+
+        if b_labels.item() != pred_class.item():
+            print("Test review as token IDs: ")
+        torch.set_printoptions(threshold=100, edgeitems=3)
+        print(b_input_ids)
+        print("Review source: ")
+        # words = toker.decode(b_input_ids[0])  # giant string
+        # print_list(words.split(' '), 3, 3)
+
+        print("==========================================")
+
+        acc = (n_correct * 1.0) / (n_correct + n_wrong)
+        print("\nCorrect: %4d " % n_correct)
+        print("Wrong:   %4d " % n_wrong)
+
         wandb.log({"loss": loss})
+        wandb.log({"accuracy": acc})
         
         total_train_loss += loss.item()
 
