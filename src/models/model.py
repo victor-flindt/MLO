@@ -4,13 +4,13 @@ PRE_TRAINED_MODEL_NAME = 'bert-base-cased'
 
 class SentimentClassifier(nn.Module):
 
-  def __init__(self, n_classes):
+  def __init__(self, n_classes, p_dropout):
 
     super(SentimentClassifier, self).__init__()
 
     self.bert = BertModel.from_pretrained(PRE_TRAINED_MODEL_NAME)
 
-    self.drop = nn.Dropout(p=0.3)
+    self.drop = nn.Dropout(p=p_dropout)
 
     self.out = nn.Linear(self.bert.config.hidden_size, n_classes)
 
