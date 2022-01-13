@@ -25,25 +25,12 @@ def main(cfg):
     loader_batch_size = cfg.hyperparameters.loader_batch_size # 32
     train_size_percentage = cfg.hyperparameters.train_size_percentage # 0.9
     sentence_max_length = cfg.hyperparameters.sentence_max_length # 64
+    training_device = cfg.hyperparameters.device # gpu
 
     random.seed(seed_val)
     np.random.seed(seed_val)
     torch.manual_seed(seed_val)
     torch.cuda.manual_seed_all(seed_val)
-
-    if torch.cuda.is_available():    
-
-        # Tell PyTorch to use the GPU.    
-        device = torch.device("cuda")
-
-        print('There are %d GPU(s) available.' % torch.cuda.device_count())
-
-        print('We will use the GPU:', torch.cuda.get_device_name(0))
-    else:
-        print('No GPU available, using the CPU instead.')
-        device = torch.device("cpu")
-
-    train_dataloader, _ = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length)
 
     model = BertForSequenceClassification.from_pretrained(
         "bert-base-uncased", # Use the 12-layer BERT model, with an uncased vocab.
@@ -53,20 +40,32 @@ def main(cfg):
         output_hidden_states = False, # Whether the model returns all hidden-states.
     )
 
-    # Tell pytorch to run this model on the GPU.
-    model.cuda()
+    train_dataloader, _ = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length)
 
     optimizer = AdamW(model.parameters(),
                     lr = lr, # args.learning_rate - default is 5e-5, our notebook had 2e-5
                     eps = eps # args.adam_epsilon  - default is 1e-8.
                     )
 
-    total_steps = len(train_dataloader) * epochs
-
     # Create the learning rate scheduler.
+    total_steps = len(train_dataloader) * epochs
     scheduler = get_linear_schedule_with_warmup(optimizer, 
                                                 num_warmup_steps = num_warmup_steps, # Default value in run_glue.py
                                                 num_training_steps = total_steps)
+
+    if torch.cuda.is_available() and training_device=="gpu":    
+
+        # Tell PyTorch to use the GPU.    
+        device = torch.device("cuda")
+        # Tell pytorch to run this model on the GPU.
+        model.cuda()
+
+        print('There are %d GPU(s) available.' % torch.cuda.device_count())
+
+        print('We will use the GPU:', torch.cuda.get_device_name(0))
+    else:
+        print('No GPU available, using the CPU instead.')
+        device = torch.device("cpu")
 
     training_stats = []
 
@@ -93,7 +92,7 @@ def main(cfg):
             if step % 40 == 0 and not step == 0:
                 # Calculate elapsed time in minutes.
                 elapsed = format_time(time.time() - t0)
-                
+
                 wandb.log({"elapsed_time": elapsed})
                 
                 # Report progress.
