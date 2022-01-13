@@ -9,6 +9,9 @@ import numpy as np
 import datetime
 import time
 
+import wandb
+wandb.init()
+
 seed_val = 42
 
 random.seed(seed_val)
@@ -46,7 +49,6 @@ optimizer = AdamW(model.parameters(),
                   eps = 1e-8 # args.adam_epsilon  - default is 1e-8.
                 )
 
-
 epochs = 4
 
 total_steps = len(train_dataloader) * epochs
@@ -56,17 +58,11 @@ scheduler = get_linear_schedule_with_warmup(optimizer,
                                             num_warmup_steps = 0, # Default value in run_glue.py
                                             num_training_steps = total_steps)
 
-
-
-
 # Function to calculate the accuracy of our predictions vs labels
 def flat_accuracy(preds, labels):
     pred_flat = np.argmax(preds, axis=1).flatten()
     labels_flat = labels.flatten()
     return np.sum(pred_flat == labels_flat) / len(labels_flat)
-
-
-
 
 def format_time(elapsed):
     '''
@@ -77,10 +73,6 @@ def format_time(elapsed):
     
     # Format as hh:mm:ss
     return str(datetime.timedelta(seconds=elapsed_rounded))
-
-
-
-
 
 training_stats = []
 
@@ -107,7 +99,7 @@ for epoch_i in range(0, epochs):
         if step % 40 == 0 and not step == 0:
             # Calculate elapsed time in minutes.
             elapsed = format_time(time.time() - t0)
-            
+            wandb.log({"elapsed_time": elapsed})
             # Report progress.
             print('  Batch {:>5,}  of  {:>5,}.    Elapsed: {:}.'.format(step, len(train_dataloader), elapsed))
 
@@ -126,6 +118,8 @@ for epoch_i in range(0, epochs):
         loss = result.loss
         logits = result.logits
 
+        wandb.log({"loss": loss})
+        
         total_train_loss += loss.item()
 
         loss.backward()
