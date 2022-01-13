@@ -1,100 +1,88 @@
-from os import truncate
 import torch
-from torch.utils.data import Dataset, DataLoader
-from sklearn.model_selection import train_test_split
-import numpy as np
-from src.data.clean_dataset import clean_data
 from transformers import BertTokenizer
-RANDOM_SEED = 42
-np.random.seed(RANDOM_SEED)
-torch.manual_seed(RANDOM_SEED)
+from src.data.clean_dataset import clean_data
+from torch.utils.data import TensorDataset, random_split
+from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-# this file will handle making of the actual dataset
-# which will consist of the processed data from the 
-# clean_dataset.py file.
-class GPReviewDataset(Dataset):
-
-  def __init__(self, reviews, targets, tokenizer, max_len):
-    self.reviews = reviews
-    self.targets = targets
-    self.tokenizer = tokenizer
-    self.max_len = max_len
-
-  def __len__(self):
-    return len(self.reviews)
-
-  def __getitem__(self, item):
-    review = str(self.reviews[item])
-    target = self.targets[item]
-    encoding = self.tokenizer.encode_plus(
-      review,
-      add_special_tokens=True,
-      max_length=self.max_len,
-      return_token_type_ids=False,
-      pad_to_max_length=True,
-      return_attention_mask=True,
-      return_tensors='pt',
-    )
-    return {
-      'review_text': review,
-      'input_ids': encoding['input_ids'].flatten(),
-      'attention_mask': encoding['attention_mask'].flatten(),
-      'targets': torch.tensor(target, dtype=torch.long)
-    }
-
-def make_dataset():
+def create_loaders():
+    
     data=clean_data()
-    df_train, df_test = train_test_split(
-                    data,
-                    test_size=0.1,
-                    random_state=RANDOM_SEED
-                )
+    sentences = data.input.values
+    labels = data.label.values
+    # Load the BERT tokenizer.
+    print('Loading BERT tokenizer...')
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
-    return df_train,df_test
+    max_len = 0
 
-# creating dataloader
-def create_data_loader(df, tokenizer, max_len, batch_size):
-  ds = GPReviewDataset(
-    reviews=df.input.to_numpy(),
-    targets=df.label.to_numpy(),
-    tokenizer=tokenizer,
-    max_len=max_len
-  )
-  return DataLoader(
-    ds,
-    batch_size=batch_size,
-    num_workers=1
-  )
+    # For every sentence...
+    for sent in sentences:
 
-def dataset():
-    BATCH_SIZE = 16
-    PRE_TRAINED_MODEL_NAME = 'bert-base-uncased'
-    tokenizer = BertTokenizer.from_pretrained(PRE_TRAINED_MODEL_NAME)
+        # Tokenize the text and add `[CLS]` and `[SEP]` tokens.
+        input_ids = tokenizer.encode(sent, add_special_tokens=True)
 
-    df_train,df_test=make_dataset()
+        # Update the maximum sentence length.
+        max_len = max(max_len, len(input_ids))
 
-    BATCH_SIZE = 16
-    MAX_LEN = 90
-    train_data_loader = create_data_loader(df_train, tokenizer, MAX_LEN, BATCH_SIZE)
-    test_data_loader = create_data_loader(df_test, tokenizer, MAX_LEN, BATCH_SIZE)
+    # Tokenize all of the sentences and map the tokens to thier word IDs.
+    input_ids = []
+    attention_masks = []
 
-    # data = next(iter(train_data_loader))
-    # print(data.keys())
-    # print(data['input_ids'].shape)
-    # print(data['attention_mask'].shape)
-    # print(data['targets'].shape)
+    # For every sentence...
+    for sent in sentences:
+        # `encode_plus` will:
+        #   (1) Tokenize the sentence.
+        #   (2) Prepend the `[CLS]` token to the start.
+        #   (3) Append the `[SEP]` token to the end.
+        #   (4) Map tokens to their IDs.
+        #   (5) Pad or truncate the sentence to `max_length`
+        #   (6) Create attention masks for [PAD] tokens.
+        encoded_dict = tokenizer.encode_plus(
+                            sent,                      # Sentence to encode.
+                            add_special_tokens = True, # Add '[CLS]' and '[SEP]'
+                            max_length = 64,           # Pad & truncate all sentences.
+                            pad_to_max_length = True,
+                            return_attention_mask = True,   # Construct attn. masks.
+                            return_tensors = 'pt',     # Return pytorch tensors.
+                    )
+        
+        # Add the encoded sentence to the list.    
+        input_ids.append(encoded_dict['input_ids'])
+        
+        # And its attention mask (simply differentiates padding from non-padding).
+        attention_masks.append(encoded_dict['attention_mask'])
 
-    # print(data['input_ids'][1])
-    # print(data['review_text'][1])
-    # print(data['targets'][1])
+    # Convert the lists into tensors.
+    input_ids = torch.cat(input_ids, dim=0)
+    attention_masks = torch.cat(attention_masks, dim=0)
+    labels = torch.tensor(labels)
 
-    # for batch_idx,(afaf,inputs,afaf,labels) in enumerate(next(iter(train_data_loader))):
-    #     if batch_idx >= 5:
-    #         break
-    #     else:
-    #         print(inputs)
+    # Combine the training inputs into a TensorDataset.
+    dataset = TensorDataset(input_ids, attention_masks, labels)
 
-    return train_data_loader, test_data_loader
+    # Create a 90-10 train-validation split.
 
-# if __name__ == "__main__":
-#   dataset()
+    # Calculate the number of samples to include in each set.
+    train_size = int(0.9 * len(dataset))
+    val_size = len(dataset) - train_size
+
+    # Divide the dataset by randomly selecting samples.
+    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+
+    print('{:>5,} training samples'.format(train_size))
+    print('{:>5,} validation samples'.format(val_size))
+
+    batch_size = 32
+
+    train_dataloader = DataLoader(
+                train_dataset,  # The training samples.
+                sampler = RandomSampler(train_dataset), # Select batches randomly
+                batch_size = batch_size # Trains with this batch size.
+            )
+
+    validation_dataloader = DataLoader(
+                val_dataset, # The validation samples.
+                sampler = SequentialSampler(val_dataset), # Pull out batches sequentially.
+                batch_size = batch_size # Evaluate with this batch size.
+            )
+    return train_dataloader, validation_dataloader
