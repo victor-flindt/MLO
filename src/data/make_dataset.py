@@ -10,11 +10,12 @@ cur_dir = os.getcwd()
 
 def get_data_from_gcp():
 
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "/app/data/raw/"
-    dl_dir = cur_dir + "/data/raw/"
-    print("dl_dir:", dl_dir)
-    os.makedirs(dl_dir, exist_ok=True)
-        
+    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "/app/data/raw/"
+    # print("dl_dir:", dl_dir)
+    # os.makedirs(dl_dir, exist_ok=True)
+    
+    
+    dl_dir = cur_dir + "/data/raw/"    
     client = storage.Client()
     bucket = client.get_bucket('mlo-dtu-bucket-1')
     
