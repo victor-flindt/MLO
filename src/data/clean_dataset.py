@@ -1,18 +1,12 @@
-import re
 import pandas as pd
-from pathlib import Path
 import os
-
-from transformers.tokenization_utils import Trie
-
-from src.data import _RAW_DATA_PATH
 
 # This file is purely for cleaning tweetlike input data, and is made such that
 # it can be reused on future tweet-like datasets
 # The file make_datasetpy will handle the actual dataloader.
-def clean_data():
+def clean_data(raw_data_path):
 
-    raw_data = pd.read_csv(_RAW_DATA_PATH, encoding='latin-1')
+    raw_data = pd.read_csv(raw_data_path, encoding='latin-1')
 
     # list of columns which should be rem oved
     waste_col = ['UserName', 'ScreenName', 'Location', 'TweetAt']

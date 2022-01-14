@@ -10,3 +10,4 @@ hyperparameters:
   sentence_max_length: 64
   learning_rate: 1e-4
   device: "gpu"
+  use_wandb: True

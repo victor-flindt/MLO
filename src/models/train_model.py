@@ -4,6 +4,7 @@ import numpy as np
 import time
 import random
 import wandb
+import os 
 
 from transformers import AdamW, BertConfig, BertForSequenceClassification
 from transformers import get_linear_schedule_with_warmup
@@ -11,11 +12,11 @@ from transformers import get_linear_schedule_with_warmup
 from src.data.make_dataset import create_loaders
 from src.utils import format_time
 
-from src.models import _SRC_PATH
+FILE_PATH = os.path.dirname(__file__) 
+SRC_PATH = os.path.join(FILE_PATH, '../')
+RAW_DATA_PATH = os.path.join(FILE_PATH, '../../data/raw/Corona_NLP_train.csv')
 
-wandb.init()
-
-@hydra.main(config_path=_SRC_PATH, config_name="config.yaml")
+@hydra.main(config_path=SRC_PATH, config_name="config.yaml")
 def main(cfg):
     seed_val = cfg.hyperparameters.seed_val # 42
     lr = cfg.hyperparameters.optimizer_adam_lr # 2e-5
@@ -26,6 +27,10 @@ def main(cfg):
     train_size_percentage = cfg.hyperparameters.train_size_percentage # 0.9
     sentence_max_length = cfg.hyperparameters.sentence_max_length # 64
     training_device = cfg.hyperparameters.device # gpu
+    use_wandb = cfg.hyperparameters.use_wandb
+
+    if (use_wandb):
+        wandb.init()
 
     random.seed(seed_val)
     np.random.seed(seed_val)
@@ -38,9 +43,10 @@ def main(cfg):
                         # You can increase this for multi-class tasks.   
         output_attentions = False, # Whether the model returns attentions weights.
         output_hidden_states = False, # Whether the model returns all hidden-states.
+        output_loading_info = False,
     )
 
-    train_dataloader, _ = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length)
+    train_dataloader, _ = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length, RAW_DATA_PATH)
 
     optimizer = AdamW(model.parameters(),
                     lr = lr, # args.learning_rate - default is 5e-5, our notebook had 2e-5
@@ -93,7 +99,8 @@ def main(cfg):
                 # Calculate elapsed time in minutes.
                 elapsed = format_time(time.time() - t0)
 
-                wandb.log({"elapsed_time": elapsed})
+                if (use_wandb):
+                    wandb.log({"elapsed_time": elapsed})
                 
                 # Report progress.
                 print('  Batch {:>5,}  of  {:>5,}.    Elapsed: {:}.'.format(step, len(train_dataloader), elapsed))
@@ -113,7 +120,8 @@ def main(cfg):
             loss = result.loss
             logits = result.logits
 
-            wandb.log({"loss": loss})
+            if (use_wandb):
+                wandb.log({"loss": loss})
 
             total_train_loss += loss.item()
 
