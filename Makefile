@@ -53,6 +53,7 @@ gen-spec: clean-deploy-files .dumps
 
 deploy-trainer: gen-spec
 	kubectl apply -f deploy/.dumps/trainer.yaml
+# Above assumes that gcloud cluster is your default cluster (current-context)
 # Watch logs locally: watch -n 1 kubectl logs [pods name]
 
 run-local: build.trainer
