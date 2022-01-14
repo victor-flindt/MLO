@@ -1,15 +1,12 @@
 import torch
-import hydra
 from transformers import BertTokenizer
 from src.data.clean_dataset import clean_data
 from torch.utils.data import TensorDataset, random_split
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-from src.data import _SRC_PATH
-
-def create_loaders(loader_batch_size, train_size_percentage, sentence_max_length):
+def create_loaders(loader_batch_size, train_size_percentage, sentence_max_length, raw_data_path):
     
-    data=clean_data()
+    data=clean_data(raw_data_path)
     sentences = data.input.values
     labels = data.label.values
     # Load the BERT tokenizer.
@@ -91,14 +88,14 @@ def create_loaders(loader_batch_size, train_size_percentage, sentence_max_length
             )
     return train_dataloader, validation_dataloader
 
-@hydra.main(config_path=_SRC_PATH, config_name="config.yaml")
-def main(cfg):
-    loader_batch_size = cfg.hyperparameters.loader_batch_size # 32
-    train_size_percentage = cfg.hyperparameters.train_size_percentage # 0.9
-    sentence_max_length = cfg.hyperparameters.sentence_max_length # 64
+# @hydra.main(config_path=SRC_PATH, config_name="config.yaml")
+# def main(cfg):
+#     loader_batch_size = cfg.hyperparameters.loader_batch_size # 32
+#     train_size_percentage = cfg.hyperparameters.train_size_percentage # 0.9
+#     sentence_max_length = cfg.hyperparameters.sentence_max_length # 64
 
-    train_dataloader, validation_dataloader = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length)
+#     train_dataloader, validation_dataloader = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length, '')
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
