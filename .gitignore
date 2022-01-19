@@ -5,6 +5,9 @@ __pycache__/
 ## ignoring the big ass anaconda shell
 Anaconda3-5.2.0-Linux-x86_64.sh
 
+# ignores models
+/models/
+
 # C extensions
 *.so
 # wandb
