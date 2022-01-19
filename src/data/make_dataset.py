@@ -28,8 +28,7 @@ def get_data_from_gcp():
 
 def create_loaders():
     
-    path = get_data_from_gcp()
-    data=clean_data(path + 'Corona_NLP_train.csv')
+    data = clean_data()
     sentences = data.input.values
     labels = data.label.values
     # Load the BERT tokenizer.
