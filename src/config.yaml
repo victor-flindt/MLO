@@ -9,5 +9,9 @@ hyperparameters:
   train_size_percentage: 0.9
   sentence_max_length: 64
   learning_rate: 1e-4
+<<<<<<< Updated upstream
   device: "gpu"
   use_wandb: True
+=======
+  device: "cpu"
+>>>>>>> Stashed changes
