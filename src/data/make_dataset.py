@@ -3,32 +3,10 @@ from transformers import BertTokenizer
 from src.data.clean_dataset import clean_data
 from torch.utils.data import TensorDataset, random_split
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
-from google.cloud import storage
-import os
-
-cur_dir = os.getcwd()
-
-def get_data_from_gcp():
-
-    # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "/app/data/raw/"
-    # print("dl_dir:", dl_dir)
-    # os.makedirs(dl_dir, exist_ok=True)
-    
-    
-    dl_dir = cur_dir + "/data/raw/"    
-    client = storage.Client()
-    bucket = client.get_bucket('mlo-dtu-bucket-1')
-    
-    blobs = list(client.list_blobs(bucket))
-    for blob in blobs:
-        filename = blob.name.replace('/', '_')
-        blob.download_to_filename(dl_dir + filename)
-        print(f'Downloaded file {dl_dir + filename}')
-    return dl_dir
 
 def create_loaders():
     
-    data = clean_data()
+    data=clean_data()
     sentences = data.input.values
     labels = data.label.values
     # Load the BERT tokenizer.

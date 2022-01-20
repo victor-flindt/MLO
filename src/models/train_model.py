@@ -10,8 +10,6 @@ import numpy as np
 import datetime
 import time
 
-from transformers.utils.dummy_pt_objects import CONVBERT_PRETRAINED_MODEL_ARCHIVE_LIST
-
 # import wandb
 # wandb.init()
 
