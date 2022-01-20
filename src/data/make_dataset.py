@@ -4,14 +4,15 @@ from src.data.clean_dataset import clean_data
 from torch.utils.data import TensorDataset, random_split
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-def create_loaders():
+def create_loaders(loader_batch_size, train_size_percentage, sentence_max_length, raw_data_path):
     
-    data=clean_data()
+    data=clean_data(raw_data_path)
     sentences = data.input.values
     labels = data.label.values
     # Load the BERT tokenizer.
     print('Loading BERT tokenizer...')
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+    print('BERT tokenizer loaded!')
 
     max_len = 0
 
@@ -40,7 +41,7 @@ def create_loaders():
         encoded_dict = tokenizer.encode_plus(
                             sent,                      # Sentence to encode.
                             add_special_tokens = True, # Add '[CLS]' and '[SEP]'
-                            max_length = 64,           # Pad & truncate all sentences.
+                            max_length = sentence_max_length,           # Pad & truncate all sentences.
                             pad_to_max_length = True,
                             return_attention_mask = True,   # Construct attn. masks.
                             return_tensors = 'pt',     # Return pytorch tensors.
@@ -63,7 +64,7 @@ def create_loaders():
     # Create a 90-10 train-validation split.
 
     # Calculate the number of samples to include in each set.
-    train_size = int(0.9 * len(dataset))
+    train_size = int(train_size_percentage * len(dataset))
     val_size = len(dataset) - train_size
 
     # Divide the dataset by randomly selecting samples.
@@ -72,7 +73,7 @@ def create_loaders():
     print('{:>5,} training samples'.format(train_size))
     print('{:>5,} validation samples'.format(val_size))
 
-    batch_size = 32
+    batch_size = loader_batch_size
 
     train_dataloader = DataLoader(
                 train_dataset,  # The training samples.
@@ -86,3 +87,15 @@ def create_loaders():
                 batch_size = batch_size # Evaluate with this batch size.
             )
     return train_dataloader, validation_dataloader
+
+# @hydra.main(config_path=SRC_PATH, config_name="config.yaml")
+# def main(cfg):
+#     loader_batch_size = cfg.hyperparameters.loader_batch_size # 32
+#     train_size_percentage = cfg.hyperparameters.train_size_percentage # 0.9
+#     sentence_max_length = cfg.hyperparameters.sentence_max_length # 64
+
+#     train_dataloader, validation_dataloader = create_loaders(loader_batch_size, train_size_percentage, sentence_max_length, '')
+
+# if __name__ == "__main__":
+#     main()
+
