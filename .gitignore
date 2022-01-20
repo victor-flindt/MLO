@@ -2,6 +2,12 @@
 __pycache__/
 *.py[cod]
 
+## ignoring the big ass anaconda shell
+Anaconda3-5.2.0-Linux-x86_64.sh
+
+#ignors models
+/models/
+
 # C extensions
 *.so
 # wandb
@@ -89,7 +95,6 @@ target/
 
 # Mypy cache
 .mypy_cache/
-/data
 
 # wandb
 /wandb
