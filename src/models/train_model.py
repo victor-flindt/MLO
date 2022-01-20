@@ -11,7 +11,7 @@ from transformers import AdamW, BertConfig, BertForSequenceClassification
 from transformers import get_linear_schedule_with_warmup
 
 from src.data.make_dataset import create_loaders
-from src.utils import format_time
+from src.utils import format_time, flat_accuracy
 
 FILE_PATH = os.path.dirname(__file__) 
 SRC_PATH = os.path.join(FILE_PATH, '../')
@@ -89,6 +89,7 @@ def main(cfg):
         # Measure how long the training epoch takes.
         t0 = time.time()
         total_train_loss = 0
+        total_accuracy = 0
 
         model.train()
 
@@ -121,9 +122,17 @@ def main(cfg):
             loss = result.loss
             logits = result.logits
 
+            logits = logits.detach().cpu().numpy()
+            label_ids = b_labels.to('cpu').numpy()
+
+            accuracy = flat_accuracy(logits, label_ids)
+            
+
             if (use_wandb):
                 wandb.log({"loss": loss})
+                wandb.log({"accuracy": accuracy})
 
+            total_accuracy += accuracy
             total_train_loss += loss.item()
 
             loss.backward()
