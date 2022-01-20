@@ -2,8 +2,16 @@
 __pycache__/
 *.py[cod]
 
+## ignoring the big ass anaconda shell
+Anaconda3-5.2.0-Linux-x86_64.sh
+
+#ignors models
+/models/
+
 # C extensions
 *.so
+# wandb
+/wandb/
 
 # Distribution / packaging
 .Python
@@ -77,7 +85,6 @@ target/
 
 # exclude data from source control by default
 /data/
-/wandb/
 
 # Mac OS-specific storage files
 .DS_Store
@@ -88,4 +95,16 @@ target/
 
 # Mypy cache
 .mypy_cache/
-/data
+
+# wandb
+/wandb
+
+# outputs
+/outputs
+
+.dumps/
+
+/logs
+
+models/model_store
+models/trained_model/*.bin
