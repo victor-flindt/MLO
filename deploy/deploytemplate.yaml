@@ -5,7 +5,7 @@ metadata:
     run: model-serve # Label for the Deployment
   name: model-serve # Name of Deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       run: model-serve
