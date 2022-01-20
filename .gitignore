@@ -100,3 +100,6 @@ target/
 .dumps/
 
 /logs
+
+models/model_store
+models/trained_model/*.bin
