@@ -16,6 +16,7 @@ from src.utils import format_time, flat_accuracy
 FILE_PATH = os.path.dirname(__file__) 
 SRC_PATH = os.path.join(FILE_PATH, '../')
 RAW_DATA_PATH = os.path.join(FILE_PATH, '../../data/raw/Corona_NLP_train.csv')
+MODEL_SAVE_PATH = os.path.join(FILE_PATH, '../../models/trained_model')
 
 @hydra.main(config_path=SRC_PATH, config_name="config.yaml")
 def main(cfg):
@@ -154,7 +155,7 @@ def main(cfg):
         print("  Average training loss: {0:.2f}".format(avg_train_loss))
         print("  Training epcoh took: {:}".format(training_time))
 
-    torch.save(model, 'model.pt')
+    model.save_pretrained(MODEL_SAVE_PATH)
 
 if __name__ == "__main__":
     main()
