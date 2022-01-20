@@ -78,6 +78,7 @@ train-model:
 
 model-archive:
 	torchserve --stop
+	@mkdir -p models/model_store
 	rm -f models/model_store/bert.mar
 	torch-model-archiver \
 		--model-name "bert" \
